@@ -14,6 +14,13 @@ module Vim
         @filetypes = [nil]
       end
 
+      # Loads the definition file.
+      #
+      # path - The String path of the definition file.
+      def load(path)
+        instance_eval File.read(path, encoding: 'UTF-8'), path
+      end
+
       # Defines a bundle.
       def bundle(name)
         bundle = Bundle.new(name: name,
