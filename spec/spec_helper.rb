@@ -7,22 +7,6 @@ RSpec::Matchers.define :include_bundle do |name, filetype = nil|
   end
 end
 
-# Creates a temporary home directory and processes the block in the directory.
-#
-# name  - The String prefix of the directory.
-# block - The Block to process.
-def homedir(name = nil, &block)
-  Dir.mktmpdir(name) do |home|
-    begin
-      old_home = ENV['HOME']
-      ENV['HOME'] = home
-      block.call(home)
-    ensure
-      ENV['HOME'] = old_home
-    end
-  end
-end
-
 # Creates a temporary file and call the block with the file.
 #
 # basename - The String temporary file base name.
