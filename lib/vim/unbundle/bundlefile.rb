@@ -5,6 +5,16 @@ module Vim
   module Unbundle
 
     class Bundlefile
+      # Finds the Bundlefile.
+      #
+      # Returns the String path.
+      def self.find
+        Dir[
+          File.expand_path('~/vimfiles/Bundlefile'),
+          File.expand_path('~/.vim/Bundlefile'),
+        ].first
+      end
+
       # Get defined bundles.
       attr_reader   :bundles
 

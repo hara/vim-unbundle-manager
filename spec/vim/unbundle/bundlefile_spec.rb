@@ -1,10 +1,70 @@
 # -*- coding: utf-8 -*-
 require_relative '../../spec_helper'
 require 'tempfile'
+require 'tmpdir'
+require 'fileutils'
 
 include Vim::Unbundle
 
 describe Bundlefile do
+
+  describe '.find' do
+
+    context 'when exists in ~/vimfiles' do
+
+      it 'returns ~/vimfiles/Bundlefile' do
+        Dir.mktmpdir('john') do |home|
+          FileUtils.mkdir_p File.join(home, 'vimfiles')
+          FileUtils.touch File.join(home, 'vimfiles', 'Bundlefile')
+          begin
+            old_home = ENV['HOME']
+            ENV['HOME'] = home
+            expect(Bundlefile.find).to eq(File.join(home, 'vimfiles', 'Bundlefile'))
+          ensure
+            ENV['HOME'] = old_home
+          end
+        end
+      end
+
+    end
+
+    context 'when exists in ~/.vim' do
+
+      it 'returns ~/.vim/Bundlefile' do
+        Dir.mktmpdir('john') do |home|
+          FileUtils.mkdir_p File.join(home, '.vim')
+          FileUtils.touch File.join(home, '.vim', 'Bundlefile')
+          begin
+            old_home = ENV['HOME']
+            ENV['HOME'] = home
+            expect(Bundlefile.find).to eq(File.join(home, '.vim', 'Bundlefile'))
+          ensure
+            ENV['HOME'] = old_home
+          end
+        end
+      end
+
+    end
+
+    context 'when does not exists' do
+
+      it 'returns ~/.vim/Bundlefile' do
+        Dir.mktmpdir('john') do |home|
+          FileUtils.mkdir_p File.join(home, 'vimfiles')
+          FileUtils.mkdir_p File.join(home, '.vim')
+          begin
+            old_home = ENV['HOME']
+            ENV['HOME'] = home
+            expect(Bundlefile.find).to be_nil
+          ensure
+            ENV['HOME'] = old_home
+          end
+        end
+      end
+
+    end
+
+  end
 
   describe '#bundle' do
     subject(:bundlefile) { Bundlefile.new }
