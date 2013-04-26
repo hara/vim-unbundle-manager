@@ -6,5 +6,6 @@ module Vim
   end
 end
 
+require 'vim/unbundle/bundle'
 require 'vim/unbundle/bundlefile'
 
