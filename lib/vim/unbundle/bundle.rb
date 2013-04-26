@@ -38,6 +38,7 @@ module Vim
       # vimdir - The String directory to locate bundle directory (ex. ~/.vim).
       #          Default: ~/vimfiles (Windows) or ~/.vim (UNIX like OS).
       def install
+        return if Dir.exist?(bundles_dir)
         FileUtils.mkdir_p bundles_dir
         Git.clone(repository, short_name, path: bundles_dir)
       end

@@ -1,6 +1,7 @@
 # coding: utf-8
 require_relative '../../spec_helper'
 require 'tmpdir'
+require 'fileutils'
 
 include Vim::Unbundle
 
@@ -86,7 +87,7 @@ describe Bundle do
       end
     end
 
-    context 'when bundle' do
+    context 'when not installed' do
       include_context 'in temporary dir'
 
       subject(:bundle) { Bundle.new(name: 'hara/testrepo') }
@@ -97,7 +98,20 @@ describe Bundle do
           expect(File.exist?(File.join(@dir, 'bundles', 'testrepo', 'README.md'))).to be_true
         end
       end
+    end
 
+    context 'when already installed' do
+      include_context 'in temporary dir'
+
+      subject(:bundle) { Bundle.new(name: 'hara/testrepo') }
+
+      it 'clones the repository' do
+        FileUtils.mkdir_p File.join(@dir, 'bundles', 'testrepo')
+        Dir.chdir(@dir) do
+          bundle.install
+          expect(File.exist?(File.join(@dir, 'bundles', 'testrepo', 'README.md'))).to be_false
+        end
+      end
     end
 
     context 'when ftbundle' do
