@@ -75,54 +75,73 @@ describe Bundle do
 
   end
 
-  describe '#install' do
+  describe '#installed?' do
 
-    shared_context 'in temporary dir' do
-      before :all do
-        @dir = Dir.mktmpdir('vimfiles')
-      end
+    context 'when is not installed' do
+      subject(:bundle) { Bundle.new(name: 'foo/bar') }
 
-      after :all do
-        FileUtils.remove_entry_secure @dir
-      end
-    end
-
-    context 'when not installed' do
-      include_context 'in temporary dir'
-
-      subject(:bundle) { Bundle.new(name: 'hara/testrepo') }
-
-      it 'clones the repository' do
-        Dir.chdir(@dir) do
-          bundle.install
-          expect(File.exist?(File.join(@dir, 'bundles', 'testrepo', 'README.md'))).to be_true
+      it 'returns false' do
+        tmpdir('vimfiles') do |dir|
+          Dir.chdir(dir) do
+            expect(bundle.installed?).to be_false
+          end
         end
       end
     end
 
-    context 'when already installed' do
-      include_context 'in temporary dir'
+    context 'when has already been installed' do
+      subject(:bundle) { Bundle.new(name: 'foo/bar') }
 
+      it 'returns true' do
+        tmpdir('vimfiles') do |dir|
+          FileUtils.mkdir_p(File.join(dir, 'bundles', 'bar'))
+          Dir.chdir(dir) do
+            expect(bundle.installed?).to be_true
+          end
+        end
+      end
+    end
+
+  end
+
+  describe '#install' do
+
+    context 'when is not installed' do
       subject(:bundle) { Bundle.new(name: 'hara/testrepo') }
 
       it 'clones the repository' do
-        FileUtils.mkdir_p File.join(@dir, 'bundles', 'testrepo')
-        Dir.chdir(@dir) do
-          bundle.install
-          expect(File.exist?(File.join(@dir, 'bundles', 'testrepo', 'README.md'))).to be_false
+        tmpdir('vimfiles') do |dir|
+          Dir.chdir(dir) do
+            bundle.install
+          end
+          expect(File.exist?(File.join(dir, 'bundles', 'testrepo', 'README.md'))).to be_true
+        end
+      end
+    end
+
+    context 'when has already been installed' do
+      subject(:bundle) { Bundle.new(name: 'hara/testrepo') }
+
+      it 'clones the repository' do
+        tmpdir('vimfiles') do |dir|
+          FileUtils.mkdir_p File.join(dir, 'bundles', 'testrepo')
+          Dir.chdir(dir) do
+            bundle.install
+          end
+          expect(File.exist?(File.join(dir, 'bundles', 'testrepo', 'README.md'))).to be_false
         end
       end
     end
 
     context 'when ftbundle' do
-      include_context 'in temporary dir'
-
       subject(:bundle) { Bundle.new(name: 'hara/testrepo', filetype: :ruby) }
 
       it 'clones the repository' do
-        Dir.chdir(@dir) do
-          bundle.install
-          expect(File.exist?(File.join(@dir, 'ftbundles', 'ruby', 'testrepo', 'README.md'))).to be_true
+        tmpdir('vimfiles') do |dir|
+          Dir.chdir(dir) do
+            bundle.install
+          end
+          expect(File.exist?(File.join(dir, 'ftbundles', 'ruby', 'testrepo', 'README.md'))).to be_true
         end
       end
     end

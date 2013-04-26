@@ -11,7 +11,7 @@ end
 #
 # name  - The String prefix of the directory.
 # block - The Block to process.
-def homedir(name, &block)
+def homedir(name = nil, &block)
   Dir.mktmpdir(name) do |home|
     begin
       old_home = ENV['HOME']
@@ -36,6 +36,13 @@ def tempfile(basename, content, &block)
     block.call(file)
   ensure
     file.unlink
+  end
+end
+
+# Creates a temporary directory and processes the block in the directory.
+def tmpdir(prefix_suffix = nil, &block)
+  Dir.mktmpdir(prefix_suffix) do |dir|
+    block.call(dir)
   end
 end
 

@@ -29,6 +29,13 @@ module Vim
           'https://github.com/vim-scripts/' + self.name + '.git'
       end
 
+      # Whether the bundle has alread been installed.
+      #
+      # Returns true if the bundle has been installed.
+      def installed?
+        Dir.exist?(dir)
+      end
+
       # Installs the bundle.
       #
       # The bundle is installed to:
@@ -38,7 +45,7 @@ module Vim
       # vimdir - The String directory to locate bundle directory (ex. ~/.vim).
       #          Default: ~/vimfiles (Windows) or ~/.vim (UNIX like OS).
       def install
-        return if Dir.exist?(bundles_dir)
+        return if installed?
         FileUtils.mkdir_p bundles_dir
         Git.clone(repository, short_name, path: bundles_dir)
       end
@@ -60,6 +67,12 @@ module Vim
           File.join(File.expand_path('ftbundles'), filetype.to_s)
         end
       end
+
+      # Gets the bundle directory.
+      def dir
+        File.join(bundles_dir, short_name)
+      end
+
     end
 
   end
