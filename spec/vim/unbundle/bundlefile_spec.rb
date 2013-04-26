@@ -63,36 +63,19 @@ describe Bundlefile do
   describe '.load' do
 
     context 'when Bundlefile exists in ~/vimfiles' do
-
-      context 'with the path' do
-        it 'returns Bundlefile' do
-          tempfile('Bundlefile', definition) do |file|
-            expect(Bundlefile.load(file.path)).to include_bundle('foo/bar')
-          end
+      it 'returns Bundlefile' do
+        tempfile('Bundlefile', definition) do |file|
+          expect(Bundlefile.load(file.path)).to include_bundle('foo/bar')
         end
       end
-
-      context 'without a path' do
-        it 'returns Bundlefile' do
-          homedir('john') do |home|
-            FileUtils.mkdir_p File.join(home, 'vimfiles')
-            File.write File.join(home, 'vimfiles', 'Bundlefile'), definition
-            expect(Bundlefile.load).to include_bundle('foo/bar')
-          end
-        end
-      end
-
     end
 
     context 'when Bundlefile does not exist' do
-
       it 'returns Bundlefile' do
-        homedir('john') do |home|
-          FileUtils.mkdir_p File.join(home, 'vimfiles')
-          expect(Bundlefile.load).to be_nil
+        tmpdir('vimfiles') do |dir|
+          expect(Bundlefile.load(File.join(dir, 'Bundlefile'))).to be_nil
         end
       end
-
     end
   end
 
