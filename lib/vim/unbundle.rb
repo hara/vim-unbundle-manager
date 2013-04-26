@@ -5,3 +5,6 @@ module Vim
     # Your code goes here...
   end
 end
+
+require 'vim/unbundle/bundlefile'
+
