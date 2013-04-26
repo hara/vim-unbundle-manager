@@ -15,46 +15,6 @@ describe Bundlefile do
   EOS
   end
 
-  describe '.find' do
-
-    context 'when Bundlefile exists in ~/vimfiles' do
-
-      it 'returns ~/vimfiles/Bundlefile' do
-        homedir('john') do |home|
-          FileUtils.mkdir_p File.join(home, 'vimfiles')
-          FileUtils.touch File.join(home, 'vimfiles', 'Bundlefile')
-          expect(Bundlefile.find).to eq(File.join(home, 'vimfiles', 'Bundlefile'))
-        end
-      end
-
-    end
-
-    context 'when Bundlefile exists in ~/.vim' do
-
-      it 'returns ~/.vim/Bundlefile' do
-        homedir('john') do |home|
-          FileUtils.mkdir_p File.join(home, '.vim')
-          FileUtils.touch File.join(home, '.vim', 'Bundlefile')
-          expect(Bundlefile.find).to eq(File.join(home, '.vim', 'Bundlefile'))
-        end
-      end
-
-    end
-
-    context 'when does not exists' do
-
-      it 'returns ~/.vim/Bundlefile' do
-        homedir('john') do |home|
-          FileUtils.mkdir_p File.join(home, 'vimfiles')
-          FileUtils.mkdir_p File.join(home, '.vim')
-          expect(Bundlefile.find).to be_nil
-        end
-      end
-
-    end
-
-  end
-
   describe '#bundle' do
     subject(:bundlefile) { Bundlefile.new }
 
