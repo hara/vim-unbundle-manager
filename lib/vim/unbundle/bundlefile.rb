@@ -15,12 +15,16 @@ module Vim
         ].first
       end
 
-      # Finds and loads the Bundlefile.
+      # Loads the Bundlefile from the <path>.
+      # When called without <path>, finds Bundlefile
+      # by `Bundlefile.find` and loads it.
+      #
+      # path - The String file path to load.
       #
       # Returns the Bundlefile.
-      def self.load
-        path = find
-        return nil if path.nil?
+      def self.load(path = nil)
+        path ||= find
+        return nil if path.nil? || !File.exist?(path)
 
         instance = Bundlefile.new
         instance.load(path)
