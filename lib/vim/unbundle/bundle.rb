@@ -62,9 +62,9 @@ module Vim
       # Gets the path of the directory to locate bundles.
       def bundles_dir
         if filetype.nil?
-          File.expand_path('bundles')
+          File.expand_path('bundle')
         else
-          File.join(File.expand_path('ftbundles'), filetype.to_s)
+          File.join(File.expand_path('ftbundle'), filetype.to_s)
         end
       end
 

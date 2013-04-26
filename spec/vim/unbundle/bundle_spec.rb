@@ -92,7 +92,7 @@ describe Bundle do
 
       it 'returns true' do
         tmpdir('vimfiles') do |dir|
-          FileUtils.mkdir_p(File.join(dir, 'bundles', 'bar'))
+          FileUtils.mkdir_p(File.join(dir, 'bundle', 'bar'))
           Dir.chdir(dir) do
             expect(bundle.installed?).to be_true
           end
@@ -112,7 +112,7 @@ describe Bundle do
           Dir.chdir(dir) do
             bundle.install
           end
-          expect(File.exist?(File.join(dir, 'bundles', 'testrepo', 'README.md'))).to be_true
+          expect(File.exist?(File.join(dir, 'bundle', 'testrepo', 'README.md'))).to be_true
         end
       end
     end
@@ -122,11 +122,11 @@ describe Bundle do
 
       it 'clones the repository' do
         tmpdir('vimfiles') do |dir|
-          FileUtils.mkdir_p File.join(dir, 'bundles', 'testrepo')
+          FileUtils.mkdir_p File.join(dir, 'bundle', 'testrepo')
           Dir.chdir(dir) do
             bundle.install
           end
-          expect(File.exist?(File.join(dir, 'bundles', 'testrepo', 'README.md'))).to be_false
+          expect(File.exist?(File.join(dir, 'bundle', 'testrepo', 'README.md'))).to be_false
         end
       end
     end
@@ -139,7 +139,7 @@ describe Bundle do
           Dir.chdir(dir) do
             bundle.install
           end
-          expect(File.exist?(File.join(dir, 'ftbundles', 'ruby', 'testrepo', 'README.md'))).to be_true
+          expect(File.exist?(File.join(dir, 'ftbundle', 'ruby', 'testrepo', 'README.md'))).to be_true
         end
       end
     end
