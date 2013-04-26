@@ -18,6 +18,15 @@ module Vim
         self.filetype = options[:filetype] if options.key?(:filetype)
       end
 
+      # Gets the repository path.
+      #
+      # Returns the String path of the repository.
+      def repository
+        self.name.include?('/') ?
+          'https://github.com/' + self.name + '.git' :
+          'https://github.com/vim-scripts/' + self.name + '.git'
+      end
+
     end
 
   end
