@@ -15,6 +15,18 @@ module Vim
         ].first
       end
 
+      # Finds and loads the Bundlefile.
+      #
+      # Returns the Bundlefile.
+      def self.load
+        path = find
+        return nil if path.nil?
+
+        instance = Bundlefile.new
+        instance.load(path)
+        instance
+      end
+
       # Get defined bundles.
       attr_reader   :bundles
 

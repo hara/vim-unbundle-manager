@@ -10,7 +10,7 @@ describe Bundlefile do
 
   describe '.find' do
 
-    context 'when exists in ~/vimfiles' do
+    context 'when Bundlefile exists in ~/vimfiles' do
 
       it 'returns ~/vimfiles/Bundlefile' do
         Dir.mktmpdir('john') do |home|
@@ -28,7 +28,7 @@ describe Bundlefile do
 
     end
 
-    context 'when exists in ~/.vim' do
+    context 'when Bundlefile exists in ~/.vim' do
 
       it 'returns ~/.vim/Bundlefile' do
         Dir.mktmpdir('john') do |home|
@@ -119,6 +119,49 @@ describe Bundlefile do
         bundlefile.load(@file.path)
         expect(bundlefile).to include_bundle('foo/baz', :ruby)
       end
+    end
+  end
+
+  describe '.load' do
+
+    context 'when Bundlefile exists in ~/vimfiles' do
+
+      it 'returns Bundlefile' do
+        Dir.mktmpdir('john') do |home|
+          FileUtils.mkdir_p File.join(home, 'vimfiles')
+          File.write File.join(home, 'vimfiles', 'Bundlefile'), <<-EOS
+          bundle 'foo/bar'
+          filetype :ruby do
+            bundle 'foo/baz'
+          end
+          EOS
+          begin
+            old_home = ENV['HOME']
+            ENV['HOME'] = home
+            expect(Bundlefile.load).to include_bundle('foo/bar')
+          ensure
+            ENV['HOME'] = old_home
+          end
+        end
+      end
+
+    end
+
+    context 'when Bundlefile does not exist' do
+
+      it 'returns Bundlefile' do
+        Dir.mktmpdir('john') do |home|
+          FileUtils.mkdir_p File.join(home, 'vimfiles')
+          begin
+            old_home = ENV['HOME']
+            ENV['HOME'] = home
+            expect(Bundlefile.load).to be_nil
+          ensure
+            ENV['HOME'] = old_home
+          end
+        end
+      end
+
     end
   end
 
