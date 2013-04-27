@@ -15,11 +15,13 @@ module Vim
 
         bundlefile.bundles.each do |bundle|
           if bundle.installed?
-            say "Using #{bundle.short_name}"
+            say "Using #{bundle.short_name}" +
+              (bundle.revision.nil? ? '' : " (#{bundle.revision})")
             next
           end
 
-          say "Installing #{bundle.short_name}'"
+          say "Installing #{bundle.short_name}'" +
+              (bundle.revision.nil? ? '' : " (#{bundle.revision})")
           bundle.install
         end
       end
