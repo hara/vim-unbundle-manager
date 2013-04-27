@@ -41,14 +41,21 @@ module Vim
         Dir.exist?(dir)
       end
 
+      # Whether the bundle has been installed as a git working directory.
+      def working_directory?
+        begin
+          Git.open(dir).status
+        rescue
+          return false
+        end
+        true
+      end
+
       # Installs the bundle.
       #
       # The bundle is installed to:
       #   <pwd>/bundles/<dir> (bundles)
       #   <pwd>/ftbundles/<filetype>/<dir> (ftbundles)
-      #
-      # vimdir - The String directory to locate bundle directory (ex. ~/.vim).
-      #          Default: ~/vimfiles (Windows) or ~/.vim (UNIX like OS).
       def install
         return if installed?
         FileUtils.mkdir_p bundles_dir

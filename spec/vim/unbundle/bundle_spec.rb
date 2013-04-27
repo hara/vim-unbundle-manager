@@ -106,6 +106,38 @@ describe Bundle do
 
   end
 
+  describe '#working_directory?' do
+
+    context 'when the bundle is git working directory' do
+      subject(:bundle) { Bundle.new(name: 'foo/bar') }
+
+      it 'returns true' do
+        tmpdir('vimfiles') do |dir|
+          FileUtils.mkdir_p File.join(dir, 'bundle')
+          g = Git.init(File.join(dir, 'bundle', 'bar'))
+          g.commit('Initial commit', allow_empty: true)
+          Dir.chdir(dir) do
+            expect(bundle.working_directory?).to be_true
+          end
+        end
+      end
+    end
+
+    context 'when the bundle is not git working directory' do
+      subject(:bundle) { Bundle.new(name: 'foo/bar') }
+
+      it 'returns false' do
+        tmpdir('vimfiles') do |dir|
+          FileUtils.mkdir_p File.join(dir, 'bundle', 'bar')
+          Dir.chdir(dir) do
+            expect(bundle.working_directory?).to be_false
+          end
+        end
+      end
+    end
+
+  end
+
   describe '#install' do
 
     context 'when is not installed' do
