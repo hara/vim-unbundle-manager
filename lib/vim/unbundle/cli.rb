@@ -15,13 +15,12 @@ module Vim
 
         bundlefile.bundles.each do |bundle|
           if bundle.installed?
-            say_status :skip, "'#{bundle.name}' has alread been installed"
+            say "Using #{bundle.short_name}"
             next
           end
 
-          say "Installing '#{bundle.name}' ... "
+          say "Installing #{bundle.short_name}'"
           bundle.install
-          say 'Done!'
         end
       end
 
