@@ -1,9 +1,13 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 require 'vim/unbundle'
 
-RSpec::Matchers.define :include_bundle do |name, filetype = nil|
+RSpec::Matchers.define :include_bundle do |name, options = {}|
   match do |actual|
-    actual.bundles.any? { |b| b.name == name && b.filetype == filetype }
+    actual.bundles.any? do |b|
+      b.name == name &&
+        b.filetype == options[:filetype] &&
+        b.revision == options[:revision]
+    end
   end
 end
 

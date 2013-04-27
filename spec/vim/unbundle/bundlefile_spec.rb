@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 require_relative '../../spec_helper'
-require 'tempfile'
-require 'tmpdir'
 require 'fileutils'
 
 include Vim::Unbundle
@@ -25,6 +23,13 @@ describe Bundlefile do
       end
     end
 
+    context 'with a name and a revision' do
+      it 'defines a new bundle' do
+        bundlefile.bundle 'foo/bar', '1.0.0'
+        expect(bundlefile).to include_bundle('foo/bar', revision: '1.0.0')
+      end
+    end
+
   end
 
   describe '#filetype' do
@@ -33,7 +38,7 @@ describe Bundlefile do
     context 'with a filetype' do
       it 'defines a ftbundle' do
         bundlefile.filetype(:ruby) { bundle 'foo/bar' }
-        expect(bundlefile).to include_bundle('foo/bar', :ruby)
+        expect(bundlefile).to include_bundle('foo/bar', filetype: :ruby)
       end
     end
 
@@ -54,7 +59,7 @@ describe Bundlefile do
         tempfile('Bundlefile', definition) do |file|
           bundlefile = Bundlefile.new
           bundlefile.load(file.path)
-          expect(bundlefile).to include_bundle('foo/baz', :ruby)
+          expect(bundlefile).to include_bundle('foo/baz', filetype: :ruby)
         end
       end
     end

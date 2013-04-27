@@ -34,9 +34,10 @@ module Vim
       end
 
       # Defines a bundle.
-      def bundle(name)
+      def bundle(name, revision = nil)
         bundle = Bundle.new(name: name,
-                            filetype: current_filetype)
+                            filetype: current_filetype,
+                            revision: revision)
         self.bundles << bundle
       end
 
