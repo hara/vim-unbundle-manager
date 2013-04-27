@@ -9,8 +9,12 @@ module Vim
     class Bundle
       # The String name of the bundle.
       attr_accessor :name
+
       # The Symbol filetype of the bundle.
       attr_accessor :filetype
+
+      # The String revision of the bundle.
+      attr_accessor :revision
 
       # Initializes a new Bundle.
       #
@@ -18,6 +22,7 @@ module Vim
       def initialize(options = {})
         self.name     = options[:name] if options.key?(:name)
         self.filetype = options[:filetype] if options.key?(:filetype)
+        self.revision = options[:revision] if options.key?(:revision)
       end
 
       # Gets the repository path.

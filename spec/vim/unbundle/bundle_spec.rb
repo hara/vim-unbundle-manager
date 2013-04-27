@@ -21,9 +21,9 @@ describe Bundle do
 
     end
 
-    context 'with the name and the filetype' do
+    context 'with the name ,the filetype, the revision' do
 
-      subject(:bundle) { Bundle.new(name: 'foo/bar', filetype: :ruby) }
+      subject(:bundle) { Bundle.new(name: 'foo/bar', filetype: :ruby, revision: '1.0.0') }
 
       it 'sets the name' do
         expect(bundle.name).to eq('foo/bar')
@@ -31,6 +31,10 @@ describe Bundle do
 
       it 'sets the filetype' do
         expect(bundle.filetype).to eq(:ruby)
+      end
+
+      it 'sets the revision' do
+        expect(bundle.revision).to eq('1.0.0')
       end
 
     end
