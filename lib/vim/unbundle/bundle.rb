@@ -52,7 +52,10 @@ module Vim
       def install
         return if installed?
         FileUtils.mkdir_p bundles_dir
-        Git.clone(repository, short_name, path: bundles_dir)
+        g = Git.clone(repository, short_name, path: bundles_dir)
+        unless revision.nil?
+          g.checkout(revision)
+        end
       end
 
       # Gets the short name.

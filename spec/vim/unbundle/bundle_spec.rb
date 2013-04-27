@@ -116,7 +116,22 @@ describe Bundle do
           Dir.chdir(dir) do
             bundle.install
           end
-          expect(File.exist?(File.join(dir, 'bundle', 'testrepo', 'README.md'))).to be_true
+          g = Git.open(File.join(dir, 'bundle', 'testrepo'))
+          expect(g.object('HEAD').sha).to eq(g.log(1).first.sha)
+        end
+      end
+    end
+
+    context 'when has the revision' do
+      subject(:bundle) { Bundle.new(name: 'hara/testrepo', revision: '4d9942') }
+
+      it 'clones the repository and checkout' do
+        tmpdir('vimfiles') do |dir|
+          Dir.chdir(dir) do
+            bundle.install
+          end
+          g = Git.open(File.join(dir, 'bundle', 'testrepo'))
+          expect(g.object('HEAD').sha).to eq('4d994241c6c6dca9b85bd9b54ceffce28d3aa70a')
         end
       end
     end
