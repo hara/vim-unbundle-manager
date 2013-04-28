@@ -211,4 +211,90 @@ describe Bundle do
 
   end
 
+  describe '#update' do
+    context 'when is not installed' do
+      subject(:bundle) { Bundle.new(name: 'foo/testrepo') }
+
+      it 'does not do nothing' do
+        tmpdir('vimfiles') do |dir|
+          Dir.chdir(dir) do
+            bundle.update
+          end
+          expect(Dir.exist?(File.join(dir, 'bundle', 'testrepo', '.git'))).to be_false
+        end
+      end
+    end
+
+    context 'when has been installed as directory' do
+      subject(:bundle) { Bundle.new(name: 'foo/testrepo') }
+
+      it 'does not do nothing' do
+        tmpdir('vimfiles') do |dir|
+          FileUtils.mkdir_p File.join(dir, 'bundle', 'testrepo')
+          Dir.chdir(dir) do
+            bundle.update
+          end
+          expect(Dir.exist?(File.join(dir, 'bundle', 'testrepo', '.git'))).to be_false
+        end
+      end
+    end
+
+    context 'when has been installed as working dir' do
+
+      context 'when fetch is required' do
+
+        subject(:bundle) { Bundle.new(name: 'foo/testrepo') }
+
+        it 'pulls and checkout' do
+          tmpdir('vimfiles') do |dir|
+            # setup remote repository
+            origin = testrepo('testrepo', dir)
+
+            # setup bundle repository
+            bundle_dir = File.join(dir, 'bundle')
+            FileUtils.mkdir_p bundle_dir
+            repo = Git.clone(origin.dir.path, 'testrepo', path: bundle_dir)
+
+            # update origin repository
+            update_testrepo(origin)
+
+            Dir.chdir(dir) do
+              bundle.update
+            end
+            expect(repo.object('HEAD').sha).to eq(origin.object('HEAD').sha)
+          end
+        end
+      end
+
+      context 'when fetch is not required' do
+
+        subject(:bundle) { Bundle.new(name: 'foo/testrepo') }
+
+        it 'pulls and checkout' do
+          tmpdir('vimfiles') do |dir|
+            # setup remote repository
+            origin = testrepo('testrepo', dir)
+            expected_sha = origin.object('HEAD').sha
+
+            # setup bundle repository
+            bundle_dir = File.join(dir, 'bundle')
+            FileUtils.mkdir_p bundle_dir
+            repo = Git.clone(origin.dir.path, 'testrepo', path: bundle_dir)
+
+            # update origin repository
+            update_testrepo(origin)
+
+            bundle.revision = '0.0.1'
+            Dir.chdir(dir) do
+              bundle.update
+            end
+            expect(repo.object('HEAD').sha).to eq(expected_sha)
+          end
+        end
+      end
+
+    end
+
+  end
+
 end

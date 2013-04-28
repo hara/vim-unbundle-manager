@@ -34,3 +34,33 @@ def tmpdir(prefix_suffix = nil, &block)
   end
 end
 
+# Creates a test git repository.
+#
+# name - The String name of the repository.
+# dir  - The String dir in which the repository will be created.
+#
+# Returns the Git::Base repository.
+def testrepo(name, dir)
+  repo = Git.init File.join(dir, name)
+  repo.chdir do
+    File.write 'README.md', 'initial'
+    repo.add('README.md')
+  end
+  repo.commit 'Initial commit'
+  repo.add_tag('0.0.1')
+  repo
+end
+
+# Updates the test repository.
+#
+# repo - The Git::Base test repository.
+def update_testrepo(repo)
+  repo.chdir do
+    File.write 'README.md', 'second'
+    repo.add('README.md')
+  end
+  repo.commit 'Second commit'
+  repo.add_tag('0.0.2')
+  repo
+end
+

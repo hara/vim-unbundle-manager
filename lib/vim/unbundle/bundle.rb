@@ -65,6 +65,22 @@ module Vim
         end
       end
 
+      # Updates the bundle.
+      def update
+        return unless installed?
+        return unless working_directory?
+
+        g = Git.open(dir)
+        if fetch_required?(g)
+          g.fetch
+          g.checkout 'master'
+          g.merge    'origin/master'
+        end
+        unless revision.nil?
+          g.checkout(revision)
+        end
+      end
+
       # Gets the short name.
       #
       # Returns the String short name.
@@ -86,6 +102,18 @@ module Vim
       # Gets the bundle directory.
       def dir
         File.join(bundles_dir, short_name)
+      end
+
+      # Gets whether the repository must be fetch.
+      def fetch_required?(repo)
+        return true if revision.nil?
+
+        begin
+          repo.revparse(self.revision)
+          false
+        rescue
+          true
+        end
       end
 
     end
