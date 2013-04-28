@@ -1,12 +1,12 @@
-# Vim::Unbundle
+# Unbundle Manager
 
-TODO: Write a gem description
+Unbundle Manager manages bundles for [unbundle.vim](https://github.com/sunaku/vim-unbundle).
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'vim-unbundle'
+    gem 'vim-unbundle-manager'
 
 And then execute:
 
@@ -14,11 +14,32 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install vim-unbundle
+    $ gem install vim-unbundle-manager
 
 ## Usage
 
-TODO: Write usage instructions here
+### Install bundles
+
+1. Write bundle definition to `~/.vim/Bundlefile` as bellow.
+
+	bundle 'matchit.zip'                     # github.com/vim-scripts/foo
+	bundle 'tpope/vim-surround'              # github.com/user/foo
+	bundle 'Shougo/neocomplcache', 'ver.7.2' # freeze bundle version
+	
+	# ftbundles
+	filetype :ruby do
+	  bundle 'vim-ruby/vim-ruby'
+	end
+
+2. Install bundles.
+
+	$ cd ~/.vim
+	$ unbundle install
+
+### Update bundles
+
+	$ cd ~/.vim
+	$ unbundle update
 
 ## Contributing
 
