@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["haraplusplus@gmail.com"]
   spec.description   = %q{vim-unbundle-manager is a manager to manage bundles for vim-unbundle.}
   spec.summary       = %q{A manager for vim-unbundle.}
-  spec.homepage      = ""
+  spec.homepage      = "https://github.com/hara/vim-unbundle-manager"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
@@ -18,8 +18,8 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "git", "~> 1.2.5"
-  spec.add_dependency "thor", "~> 0.18.1"
+  spec.add_dependency "git", "~> 1.2"
+  spec.add_dependency "thor", "~> 0.18"
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
