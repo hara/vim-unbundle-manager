@@ -83,10 +83,8 @@ describe Bundle do
       subject(:bundle) { Bundle.new(name: 'foo/bar') }
 
       it 'returns false' do
-        tmpdir('vimfiles') do |dir|
-          Dir.chdir(dir) do
-            expect(bundle.installed?).to be_false
-          end
+        in_tmpdir('vimfiles') do |dir|
+          expect(bundle.installed?).to be_false
         end
       end
     end
@@ -95,11 +93,9 @@ describe Bundle do
       subject(:bundle) { Bundle.new(name: 'foo/bar') }
 
       it 'returns true' do
-        tmpdir('vimfiles') do |dir|
+        in_tmpdir('vimfiles') do |dir|
           FileUtils.mkdir_p(File.join(dir, 'bundle', 'bar'))
-          Dir.chdir(dir) do
-            expect(bundle.installed?).to be_true
-          end
+          expect(bundle.installed?).to be_true
         end
       end
     end
@@ -112,13 +108,11 @@ describe Bundle do
       subject(:bundle) { Bundle.new(name: 'foo/bar') }
 
       it 'returns true' do
-        tmpdir('vimfiles') do |dir|
+        in_tmpdir('vimfiles') do |dir|
           FileUtils.mkdir_p File.join(dir, 'bundle')
           g = Git.init(File.join(dir, 'bundle', 'bar'))
           g.commit('Initial commit', allow_empty: true)
-          Dir.chdir(dir) do
-            expect(bundle.working_directory?).to be_true
-          end
+          expect(bundle.working_directory?).to be_true
         end
       end
     end
@@ -127,11 +121,9 @@ describe Bundle do
       subject(:bundle) { Bundle.new(name: 'foo/bar') }
 
       it 'returns false' do
-        tmpdir('vimfiles') do |dir|
+        in_tmpdir('vimfiles') do |dir|
           FileUtils.mkdir_p File.join(dir, 'bundle', 'bar')
-          Dir.chdir(dir) do
-            expect(bundle.working_directory?).to be_false
-          end
+          expect(bundle.working_directory?).to be_false
         end
       end
     end
@@ -144,10 +136,8 @@ describe Bundle do
       subject(:bundle) { Bundle.new(name: 'hara/testrepo') }
 
       it 'clones the repository' do
-        tmpdir('vimfiles') do |dir|
-          Dir.chdir(dir) do
-            bundle.install
-          end
+        in_tmpdir('vimfiles') do |dir|
+          bundle.install
           g = Git.open(File.join(dir, 'bundle', 'testrepo'))
           expect(g.object('HEAD').sha).to eq(g.log(1).first.sha)
         end
@@ -158,10 +148,8 @@ describe Bundle do
       subject(:bundle) { Bundle.new(name: 'hara/testrepo', revision: '4d9942') }
 
       it 'clones the repository and checkout' do
-        tmpdir('vimfiles') do |dir|
-          Dir.chdir(dir) do
-            bundle.install
-          end
+        in_tmpdir('vimfiles') do |dir|
+          bundle.install
           g = Git.open(File.join(dir, 'bundle', 'testrepo'))
           expect(g.object('HEAD').sha).to eq('4d994241c6c6dca9b85bd9b54ceffce28d3aa70a')
         end
@@ -172,10 +160,8 @@ describe Bundle do
       subject(:bundle) { Bundle.new(name: 'hara/testrepo', revision: '0.0.1') }
 
       it 'clones the repository and checkout' do
-        tmpdir('vimfiles') do |dir|
-          Dir.chdir(dir) do
-            bundle.install
-          end
+        in_tmpdir('vimfiles') do |dir|
+          bundle.install
           g = Git.open(File.join(dir, 'bundle', 'testrepo'))
           expect(g.object('HEAD').sha).to eq('4d994241c6c6dca9b85bd9b54ceffce28d3aa70a')
         end
@@ -186,11 +172,9 @@ describe Bundle do
       subject(:bundle) { Bundle.new(name: 'hara/testrepo') }
 
       it 'clones the repository' do
-        tmpdir('vimfiles') do |dir|
+        in_tmpdir('vimfiles') do |dir|
           FileUtils.mkdir_p File.join(dir, 'bundle', 'testrepo')
-          Dir.chdir(dir) do
-            bundle.install
-          end
+          bundle.install
           expect(File.exist?(File.join(dir, 'bundle', 'testrepo', 'README.md'))).to be_false
         end
       end
@@ -200,10 +184,8 @@ describe Bundle do
       subject(:bundle) { Bundle.new(name: 'hara/testrepo', filetype: :ruby) }
 
       it 'clones the repository' do
-        tmpdir('vimfiles') do |dir|
-          Dir.chdir(dir) do
-            bundle.install
-          end
+        in_tmpdir('vimfiles') do |dir|
+          bundle.install
           expect(File.exist?(File.join(dir, 'ftbundle', 'ruby', 'testrepo', 'README.md'))).to be_true
         end
       end
@@ -216,10 +198,8 @@ describe Bundle do
       subject(:bundle) { Bundle.new(name: 'foo/testrepo') }
 
       it 'does not do nothing' do
-        tmpdir('vimfiles') do |dir|
-          Dir.chdir(dir) do
-            bundle.update
-          end
+        in_tmpdir('vimfiles') do |dir|
+          bundle.update
           expect(Dir.exist?(File.join(dir, 'bundle', 'testrepo', '.git'))).to be_false
         end
       end
@@ -229,11 +209,9 @@ describe Bundle do
       subject(:bundle) { Bundle.new(name: 'foo/testrepo') }
 
       it 'does not do nothing' do
-        tmpdir('vimfiles') do |dir|
+        in_tmpdir('vimfiles') do |dir|
           FileUtils.mkdir_p File.join(dir, 'bundle', 'testrepo')
-          Dir.chdir(dir) do
-            bundle.update
-          end
+          bundle.update
           expect(Dir.exist?(File.join(dir, 'bundle', 'testrepo', '.git'))).to be_false
         end
       end
@@ -246,7 +224,7 @@ describe Bundle do
         subject(:bundle) { Bundle.new(name: 'foo/testrepo') }
 
         it 'pulls and checkout' do
-          tmpdir('vimfiles') do |dir|
+          in_tmpdir('vimfiles') do |dir|
             # setup remote repository
             origin = testrepo('testrepo', dir)
 
@@ -258,9 +236,7 @@ describe Bundle do
             # update origin repository
             update_testrepo(origin)
 
-            Dir.chdir(dir) do
-              bundle.update
-            end
+            bundle.update
             expect(repo.object('HEAD').sha).to eq(origin.object('HEAD').sha)
           end
         end
@@ -271,7 +247,7 @@ describe Bundle do
         subject(:bundle) { Bundle.new(name: 'foo/testrepo') }
 
         it 'pulls and checkout' do
-          tmpdir('vimfiles') do |dir|
+          in_tmpdir('vimfiles') do |dir|
             # setup remote repository
             origin = testrepo('testrepo', dir)
             expected_sha = origin.object('HEAD').sha
@@ -285,9 +261,7 @@ describe Bundle do
             update_testrepo(origin)
 
             bundle.revision = '0.0.1'
-            Dir.chdir(dir) do
-              bundle.update
-            end
+            bundle.update
             expect(repo.object('HEAD').sha).to eq(expected_sha)
           end
         end
