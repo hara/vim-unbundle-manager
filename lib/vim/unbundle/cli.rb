@@ -51,7 +51,10 @@ module Vim
         force = options[:force]
         bundlefile = load_bundlefile
         if force
-          bundlefile.clean
+          bundlefile.clean do |bundle|
+            say cleaning_message(bundle)
+            true
+          end
         else
           bundlefile.clean { |bundle| ask("Remove #{File.basename bundle}?", limited_to: ['y', 'n']) == 'y' }
         end
@@ -84,6 +87,10 @@ module Vim
           (bundle.revision.nil? ? '' : " (#{bundle.revision})")
       end
 
+      # Gets the String 'Cleaning bundle' message.
+      def cleaning_message(dir)
+        "Cleaning #{File.basename(dir)}"
+      end
     end
 
   end
