@@ -60,9 +60,7 @@ module Vim
         return if installed?
         FileUtils.mkdir_p bundles_dir
         g = Git.clone(repository, short_name, path: bundles_dir)
-        unless revision.nil?
-          g.checkout(revision)
-        end
+        g.checkout(revision) unless revision.nil?
       end
 
       # Updates the bundle.
