@@ -84,4 +84,53 @@ describe Bundlefile do
     end
   end
 
+  describe '#clean' do
+
+    subject(:bundlefile) do
+      bundlefile = Bundlefile.new
+      bundlefile.bundle 'foo/defined_bundle'
+      bundlefile.filetype :ruby do
+        bundlefile.bundle 'foo/defined_ftbundle'
+      end
+      bundlefile
+    end
+
+    it 'removes undefined bundles' do
+      in_tmpdir('vimfiles') do |dir|
+        undefined = File.join(dir, 'bundle', 'undefined_bundle')
+        FileUtils.mkdir_p undefined
+        bundlefile.clean
+        expect(Dir.exist?(undefined)).to be_false
+      end
+    end
+
+    it 'does not remove defined bundles' do
+      in_tmpdir('vimfiles') do |dir|
+        defined = File.join(dir, 'bundle', 'defined_bundle')
+        FileUtils.mkdir_p defined
+        bundlefile.clean
+        expect(Dir.exist?(defined)).to be_true
+      end
+    end
+
+    it 'removes undefined ftbundles' do
+      in_tmpdir('vimfiles') do |dir|
+        undefined = File.join(dir, 'ftbundle', 'ruby', 'undefined_ftbundle')
+        FileUtils.mkdir_p undefined
+        bundlefile.clean
+        expect(Dir.exist?(undefined)).to be_false
+      end
+    end
+
+    it 'does not remove defined ftbundles' do
+      in_tmpdir('vimfiles') do |dir|
+        defined = File.join(dir, 'ftbundle', 'ruby', 'defined_ftbundle')
+        FileUtils.mkdir_p defined
+        bundlefile.clean
+        expect(Dir.exist?(defined)).to be_true
+      end
+    end
+
+  end
+
 end

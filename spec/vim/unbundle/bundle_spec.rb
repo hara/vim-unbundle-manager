@@ -297,4 +297,28 @@ describe Bundle do
 
   end
 
+  describe '#dir' do
+
+    context 'when bundle' do
+
+      subject(:bundle) { Bundle.new(name: 'foo/testrepo') }
+
+      it 'returns bundle directory' do
+        expect(bundle.dir).to eq(File.expand_path('bundle/testrepo'))
+      end
+
+    end
+
+    context 'when ftbundle' do
+
+      subject(:bundle) { Bundle.new(name: 'foo/testrepo', filetype: :ruby) }
+
+      it 'returns ftbundle directory' do
+        expect(bundle.dir).to eq(File.expand_path('ftbundle/ruby/testrepo'))
+      end
+
+    end
+
+  end
+
 end
