@@ -73,12 +73,10 @@ module Vim
         g = Git.open(dir)
         if fetch_required?(g)
           g.fetch
-          g.checkout 'master'
-          g.merge    'origin/master'
+          g.checkout(g.current_branch)
+          g.merge(g.remote.branch(g.current_branch))
         end
-        unless revision.nil?
-          g.checkout(revision)
-        end
+        g.checkout(revision) unless revision.nil?
       end
 
       # Gets the short name.
