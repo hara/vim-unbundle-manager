@@ -62,13 +62,13 @@ module Vim
 
       # Gets the String 'Installing bundle (rev)' message.
       def installing_message(bundle)
-        "Installing #{bundle.short_name}'" +
+        "Installing #{bundle.short_name}" +
           (bundle.revision.nil? ? '' : " (#{bundle.revision})")
       end
 
       # Gets the String 'Updating bundle (rev)' message.
       def updating_message(bundle)
-        "Updating #{bundle.short_name}'" +
+        "Updating #{bundle.short_name}" +
           (bundle.revision.nil? ? '' : " (#{bundle.revision})")
       end
 
