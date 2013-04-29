@@ -55,7 +55,9 @@ module Vim
       # Removes undefined bundles.
       def clean
         undefined_bundles.each do |path|
-          FileUtils.rm_rf path
+          remove = true
+          remove = yield path if block_given?
+          FileUtils.rm_rf path if remove
         end
       end
 

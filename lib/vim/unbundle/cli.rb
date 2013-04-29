@@ -45,6 +45,18 @@ module Vim
 
       end
 
+      desc 'clean', 'Clean undefined bundles'
+      method_option :force, type: :boolean, default: false, aliases: '-f', desc: 'clean without confirmation'
+      def clean
+        force = options[:force]
+        bundlefile = load_bundlefile
+        if force
+          bundlefile.clean
+        else
+          bundlefile.clean { |bundle| ask("Remove #{File.basename bundle}?", limited_to: ['y', 'n']) == 'y' }
+        end
+      end
+
       private
 
       # Loads the 'Bundlefile'.
