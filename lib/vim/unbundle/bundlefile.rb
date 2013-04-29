@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+require 'fileutils'
 
 module Vim
 
@@ -51,11 +52,33 @@ module Vim
         end
       end
 
+      # Removes undefined bundles.
+      def clean
+        undefined_bundles.each do |path|
+          remove = true
+          remove = yield path if block_given?
+          FileUtils.rm_rf path if remove
+        end
+      end
+
       private
 
-      # Get the current filetype scope.
+      # Gets the current filetype scope.
       def current_filetype
         @filetypes.last
+      end
+
+      # Gets the installed bundles.
+      def installed_bundles
+        Dir[
+          File.expand_path('bundle/*/'),
+          File.expand_path('ftbundle/*/*/'),
+        ]
+      end
+
+      # Gets the undefined bundles.
+      def undefined_bundles
+        installed_bundles - bundles.map { |bundle| bundle.dir }
       end
 
     end

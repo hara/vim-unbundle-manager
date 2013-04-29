@@ -84,6 +84,11 @@ module Vim
         name.split('/').last
       end
 
+      # Gets the bundle directory.
+      def dir
+        File.join(bundles_dir, short_name)
+      end
+
       private
 
       # Gets the path of the directory to locate bundles.
@@ -93,11 +98,6 @@ module Vim
         else
           File.join(File.expand_path('ftbundle'), filetype.to_s)
         end
-      end
-
-      # Gets the bundle directory.
-      def dir
-        File.join(bundles_dir, short_name)
       end
 
       # Gets whether the repository must be fetch.

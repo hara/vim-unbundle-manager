@@ -27,10 +27,19 @@ def tempfile(basename, content, &block)
   end
 end
 
-# Creates a temporary directory and processes the block in the directory.
+# Creates a temporary directory and processes the block with the directory.
 def tmpdir(prefix_suffix = nil, &block)
   Dir.mktmpdir(prefix_suffix) do |dir|
     block.call(dir)
+  end
+end
+
+# Creates a temporary directory and processes the block in the directory.
+def in_tmpdir(prefix_suffix = nil, &block)
+  Dir.mktmpdir(prefix_suffix) do |dir|
+    Dir.chdir(dir) do
+      block.call(dir)
+    end
   end
 end
 

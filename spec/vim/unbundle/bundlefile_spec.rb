@@ -84,4 +84,111 @@ describe Bundlefile do
     end
   end
 
+  describe '#clean' do
+
+    let(:bundlefile) do
+      bundlefile = Bundlefile.new
+      bundlefile.bundle 'foo/defined_bundle'
+      bundlefile.filetype :ruby do
+        bundlefile.bundle 'foo/defined_ftbundle'
+      end
+      bundlefile
+    end
+
+    let(:dotvim) { Dir.mktmpdir('.vim') }
+    let(:defined_bundle) { File.join(dotvim, 'bundle', 'defined_bundle')}
+    let(:undefined_bundle) { File.join(dotvim, 'bundle', 'undefined_bundle')}
+    let(:defined_ftbundle) { File.join(dotvim, 'ftbundle', 'ruby', 'defined_ftbundle')}
+    let(:undefined_ftbundle) { File.join(dotvim, 'ftbundle', 'ruby', 'undefined_ftbundle')}
+
+    shared_context 'in .vim' do
+      before do
+        FileUtils.mkdir_p dotvim
+        FileUtils.mkdir_p defined_bundle
+        FileUtils.mkdir_p undefined_bundle
+        FileUtils.mkdir_p defined_ftbundle
+        FileUtils.mkdir_p undefined_ftbundle
+      end
+
+      after do
+        FileUtils.remove_entry_secure dotvim
+      end
+    end
+
+    shared_examples 'clean bundles' do
+      it 'removes undefined bundles' do
+        expect(Dir.exist?(undefined_bundle)).to be_false
+      end
+
+      it 'does not remove defined bundles' do
+        expect(Dir.exist?(defined_bundle)).to be_true
+      end
+
+      it 'removes undefined ftbundles' do
+        expect(Dir.exist?(undefined_ftbundle)).to be_false
+      end
+
+      it 'does not remove defined ftbundles' do
+        expect(Dir.exist?(defined_ftbundle)).to be_true
+      end
+    end
+
+    context 'without block' do
+      include_context 'in .vim'
+
+      before do
+        Dir.chdir(dotvim) { bundlefile.clean }
+      end
+
+      include_examples 'clean bundles'
+    end
+
+    context 'with a block' do
+      include_context 'in .vim'
+
+      it 'yields undefined bundle path' do
+        Dir.chdir(dotvim) do
+          expect { |b| bundlefile.clean(&b) }.to yield_successive_args(undefined_bundle, undefined_ftbundle)
+        end
+      end
+
+    end
+
+    context 'with a block returns true' do
+      include_context 'in .vim'
+
+      before do
+        Dir.chdir(dotvim) { bundlefile.clean { true } }
+      end
+
+      include_examples 'clean bundles'
+    end
+
+    context 'with a block which does not true' do
+      include_context 'in .vim'
+
+      before do
+        Dir.chdir(dotvim) { bundlefile.clean { false } }
+      end
+
+      it 'does not remove undefined bundles' do
+        expect(Dir.exist?(undefined_bundle)).to be_true
+      end
+
+      it 'does not remove defined bundles' do
+        expect(Dir.exist?(defined_bundle)).to be_true
+      end
+
+      it 'does not removes undefined ftbundles' do
+        expect(Dir.exist?(undefined_ftbundle)).to be_true
+      end
+
+      it 'does not remove defined ftbundles' do
+        expect(Dir.exist?(defined_ftbundle)).to be_true
+      end
+
+    end
+
+  end
+
 end
